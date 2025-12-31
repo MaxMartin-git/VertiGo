@@ -18,7 +18,7 @@ void setup() {
   setMotorpins();
 }
 
-void loop() {
+void loop() { //wird ständig wiederholt
   handleWiFi(server);   // verarbeitet Anfragen → setzt "command" & "velocity"
   driveMotors(leftPWM, leftDir, rightPWM, rightDir);
 }
