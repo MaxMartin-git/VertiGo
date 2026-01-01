@@ -64,31 +64,45 @@ void sendWebpage(WiFiClient &client) {
   client.println("let active = false;");
   client.println("let boxRect = box.getBoundingClientRect();");
 
+  client.println("let lastX = 0;");
+  client.println("let lastY = 0;");
+  client.println("let centerX = 0;");
+  client.println("let centerY = 0;");
+  client.println("let maxRadius = 0;");
+  client.println("let calculated = false;");
+    
   client.println("let lastSendTime = 0;");
+  client.println("let stickRadius = 30;");
   client.println("const SEND_INTERVAL = 200");  // alle xy ms");
 
   client.println("function send(x, y) {");
+  client.println("  if (x === lastX && y === lastY) return;");
   client.println("  const now = Date.now();");
-  client.println("  if (((x != 0) || (y != 0)) && now - lastSendTime < SEND_INTERVAL) return;");
+  client.println("  if (((x != 0) || (y != 0)) && now - lastSendTime < SEND_INTERVAL) return;"); // wenn x UND y gleich 0 wird gesendet zum Stoppen.
   client.println("  lastSendTime = now;");
+  client.println("  lastX = x;");
+  client.println("  lastY = y;");
   client.println("  fetch(`/joy?x=${x}&y=${y}`);");
   client.println("}");
 
   //---------------------------------------
 
+  client.println("function CalcJoyGeom() {");
+  client.println("  centerX = boxRect.width / 2 + boxRect.left;");
+  client.println("  centerY = boxRect.height / 2 + boxRect.top;");
+  client.println("  maxRadius = centerX - stickRadius;");
+  client.println("  calculated = true;");
+  client.println("}");
+
   client.println("function handle(e) {");
   client.println("  if (!active) return;");
-  client.println("  const rect = box.getBoundingClientRect();");
-  client.println("  const centerX = rect.width / 2;");
-  client.println("  const centerY = rect.height / 2;");
-  client.println("  const stickRadius = 30;");
-  client.println("  const maxRadius = centerX - stickRadius;");
+  client.println("  if (!calculated) CalcJoyGeom();");
+  client.println("  let x = e.clientX - centerX;");
+  client.println("  let y = e.clientY - centerY;");
 
-  client.println("  let x = e.clientX - rect.left - centerX;");
-  client.println("  let y = e.clientY - rect.top  - centerY;");
-
-  client.println("  const dist = Math.sqrt(x*x + y*y);");
-  client.println("  if (dist > maxRadius) {");
+  client.println("  const dist2 = x*x + y*y;");
+  client.println("  if (dist2 > maxRadius * maxRadius) {");
+  client.println("    const dist = Math.sqrt(dist2);");
   client.println("    x = x / dist * maxRadius;");
   client.println("    y = y / dist * maxRadius;");
   client.println("  }");
