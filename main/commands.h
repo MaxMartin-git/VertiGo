@@ -1,11 +1,5 @@
 #pragma once
 
-// Globale Variablen für Motorsteuerung
-
-// Geschwindigkeit und Lenkung (Joystick oder andere Quelle)
-extern int velocity;   // Vorwärts/Rückwärtswert -255..255
-extern int steering;   // Lenkwert -255..255
-
 // PWM-Werte für die Motoren (immer positiv, 0..255)
 extern int leftPWM;
 extern int rightPWM;

@@ -1,9 +1,5 @@
 #include "commands.h"
 
-// Geschwindigkeit / Lenkung
-int velocity = 0;
-int steering = 0;
-
 // PWM-Werte für die Motoren
 int leftPWM = 0;
 int rightPWM = 0;

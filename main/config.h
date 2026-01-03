@@ -4,7 +4,7 @@
 // --------------------------------------------------------
 //  WLAN-KONFIGURATION
 // --------------------------------------------------------
-#define WIFI_SSID  "UNO_R4_AP"
+#define WIFI_SSID  "VertiGo"
 #define WIFI_PASS  "12345678"
 #define WIFI_PORT     80
 
