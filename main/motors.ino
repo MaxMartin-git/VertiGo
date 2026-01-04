@@ -2,12 +2,12 @@
 #include "commands.h"
 
 // Pin-Zuweisungen
-const int leftBackward  = 1;
-const int leftForward   = 2;
-const int leftVelocity  = 3;
-const int rightBackward = 4;
-const int rightForward  = 5;
-const int rightVelocity = 6;
+#define leftBackward  1
+#define leftForward   2
+#define leftVelocity  3
+#define rightBackward 4
+#define rightForward  5
+#define rightVelocity 6
 
 // Pin-Modus setzen
 void setMotorpins() {
