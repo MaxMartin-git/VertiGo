@@ -21,5 +21,5 @@ void setup() {
 void loop() { //ab hier wird ständig wiederholt
   handleWiFi(server);   // verarbeitet Anfragen → setzt "command" & "velocity"
   driveMotors(leftPWM, leftDir, rightPWM, rightDir);
-  US_measure();
+  //US_measure();
 }

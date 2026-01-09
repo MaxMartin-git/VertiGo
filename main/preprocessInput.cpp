@@ -2,8 +2,8 @@
 #include "config.h"
 #include "commands.h"
 
-RequestResult preprocessInput(const String &req) {
-    RequestResult result = {false, ""};
+bool preprocessInput(const String &req) {
+    //RequestResult result = false;
 
     // === Joystick-Steuerung mit gleichwertiger Skalierung von x und y ===
     if (req.indexOf("GET /joy?") != -1) {
@@ -38,24 +38,23 @@ RequestResult preprocessInput(const String &req) {
             rightPWM = abs(tmpRight);
         }
 
-        result.sendShortResponse = true;
-        //result.responseText = "OK";
-        return result;
+        //result.sendShortResponse = true;
+        return true;
     }
 
     // --- Motor EIN ---
     if (req.indexOf("/?motor=on") != -1) {
         enableMotors = true;
         Serial.println("enableMotors: true");
-        return result; 
+        return false; 
     }
 
     // --- Motor AUS ---
     if (req.indexOf("/?motor=off") != -1) {
         enableMotors = false;
         Serial.println("enableMotors: false");
-        return result; 
+        return false; 
     }
 
-    return result; // Standard: Signal für WifiHandler zum Webseite senden, wenn der Request nicht speziell behandelt wird, Webseite laden/ Standardrequests etc.
+    return false; // Standard: Signal für WifiHandler zum Webseite senden, wenn der Request nicht speziell behandelt wird, Webseite laden/ Standardrequests etc.
 }

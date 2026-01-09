@@ -21,15 +21,13 @@ void handleWiFi(WiFiServer &server) {
     Serial.println(req);
 
     // --- Logik auslagern ---
-    RequestResult result = preprocessInput(req);
+    bool sendShortResponse = preprocessInput(req);
 
     // --- Antwort senden ---
-    if (result.sendShortResponse) {
+    if (sendShortResponse) {
         client.println("HTTP/1.1 200 OK");
-        client.println("Content-Type: text/plain");
         client.println("Connection: close");
         client.println();
-        client.println(result.responseText);
     } else {
         // Standardfall: Webseite senden
         sendWebpage(client);
