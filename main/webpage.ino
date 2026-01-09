@@ -65,75 +65,52 @@ void sendWebpage(WiFiClient &client) {
   client.println("let active = false;");
   client.println("let boxRect = box.getBoundingClientRect();");
 
-  client.println("let lastX = 0;");
-  client.println("let lastY = 0;");
-  client.println("let centerX = 0;");
-  client.println("let centerY = 0;");
-  client.println("let maxRadius = 0;");
-  client.println("let calculated = false;");
-    
   client.println("let lastSendTime = 0;");
-  client.println("let stickRadius = 30;");
   client.println("const SEND_INTERVAL = 200");  // alle xy ms");
 
   client.println("function send(x, y) {");
-  client.println("  if (x === lastX && y === lastY) return;");
   client.println("  const now = Date.now();");
-  client.println("  if (((x != 0) || (y != 0)) && now - lastSendTime < SEND_INTERVAL) return;"); // wenn x UND y gleich 0 wird gesendet zum Stoppen.
+  client.println("  if (((x != 0) || (y != 0)) && now - lastSendTime < SEND_INTERVAL) return;");
   client.println("  lastSendTime = now;");
-  client.println("  lastX = x;");
-  client.println("  lastY = y;");
   client.println("  fetch(`/joy?x=${x}&y=${y}`);");
   client.println("}");
 
   //---------------------------------------
 
-  client.println("function CalcJoyGeom() {");
-  client.println("  centerX = boxRect.width / 2 + boxRect.left;");
-  client.println("  centerY = boxRect.height / 2 + boxRect.top;");
-  client.println("  maxRadius = centerX - stickRadius;");
-  client.println("  calculated = true;");
-  client.println("}");
-
   client.println("function handle(e) {");
   client.println("  if (!active) return;");
-  client.println("  if (!calculated) CalcJoyGeom();");
-  client.println("  let x = e.clientX - centerX;");
-  client.println("  let y = e.clientY - centerY;");
+  client.println("  let x = e.clientX - boxRect.left - 150;");
+  client.println("  let y = e.clientY - boxRect.top - 150;");
 
-  client.println("  const dist2 = x*x + y*y;");
-  client.println("  if (dist2 > maxRadius * maxRadius) {");
-  client.println("    const dist = Math.sqrt(dist2);");
-  client.println("    x = x / dist * maxRadius;");
-  client.println("    y = y / dist * maxRadius;");
+  client.println("  const dist = Math.sqrt(x*x + y*y);");
+  client.println("  if (dist > 60) {");
+  client.println("      x = x / dist * 60;");
+  client.println("      y = y / dist * 60;");
   client.println("  }");
 
-  client.println("  joy.style.left = (centerX + x) + 'px';");
-  client.println("  joy.style.top  = (centerY + y) + 'px';");
+  client.println("  joy.style.left = (150 + x - 30) + 'px';");
+  client.println("  joy.style.top  = (150 + y - 30) + 'px';");
 
-  client.println("  const nx = (x / maxRadius).toFixed(2);");
-  client.println("  const ny = (-y / maxRadius).toFixed(2);");
+  client.println("const rect = box.getBoundingClientRect();");
+  client.println("const centerX = rect.width / 2;");
+  client.println("const centerY = rect.height / 2;");
+
+  client.println("joy.style.left = (centerX + x) + 'px';");
+  client.println("joy.style.top  = (centerY + y) + 'px';");
+
+  client.println("  const nx = (x / 60).toFixed(2);");
+  client.println("  const ny = (-y / 60).toFixed(2);");
 
   client.println("  send(nx, ny);");
   client.println("}");
 
-  //Listener-Block + Reset
   client.println("box.addEventListener('mousedown', e => { active = true; handle(e); });");
   client.println("window.addEventListener('mousemove', handle);");
+  client.println("window.addEventListener('mouseup', () => { active = false; joy.style.left='45px'; joy.style.top='45px'; send(0,0); });");
 
   client.println("box.addEventListener('touchstart', e => { active = true; handle(e.touches[0]); });");
   client.println("window.addEventListener('touchmove', e => handle(e.touches[0]));");
-
-  client.println("function resetJoy() {");
-  client.println("  active = false;");
-  client.println("  joy.style.left = '50%';");
-  client.println("  joy.style.top  = '50%';");
-  client.println("  joy.style.transform = 'translate(-50%, -50%)';");
-  client.println("  send(0, 0);");
-  client.println("}");
-
-  client.println("window.addEventListener('mouseup', resetJoy);");
-  client.println("window.addEventListener('touchend', resetJoy);");
+  client.println("window.addEventListener('touchend', () => { active = false; joy.style.left='45px'; joy.style.top='45px'; send(0,0); });");
 
   client.println("</script>");
   client.println("</body></html>");
