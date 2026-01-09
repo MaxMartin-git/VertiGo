@@ -1,3 +1,4 @@
+//Test check_latency
 #include <WiFiS3.h>
 #include "commands.h"
 
