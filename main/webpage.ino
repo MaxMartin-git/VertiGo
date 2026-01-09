@@ -103,6 +103,8 @@ void sendWebpage(WiFiClient &client) {
   client.println("  const nx = (x / 60).toFixed(2);");
   client.println("  const ny = (-y / 60).toFixed(2);");
 
+  client.println("  const tsend = Math.round(performance.now());"); //Anpassung zum Testen
+  client.println("  console.log('JS latency:', (tsend - touchTimeStamp).toFixed(2), 'ms');"); //Anpassung zum Testen
   client.println("  send(nx, ny, touchTimeStamp);"); //+ touchTimeStamp
   client.println("}");
 
