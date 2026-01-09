@@ -3,13 +3,7 @@
 
 #include <Arduino.h> // für String
 
-// Struct für die Rückgabe von preprocessInput
-//struct RequestResult {
-  //  bool sendShortResponse;   // true = nur kurze Text-Antwort (z.B. Joystick)
-    //String responseText;  // optional: Inhalt der Antwort
-//};
-
 // Funktionsdeklaration
 bool preprocessInput(const String &req);//RequestResult preprocessInput(const String &req);
-
+extern unsigned long tts; //touchTimeStamp
 #endif

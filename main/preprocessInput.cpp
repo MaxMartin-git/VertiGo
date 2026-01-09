@@ -1,6 +1,7 @@
 #include "preprocessInput.h"
 #include "config.h"
 #include "commands.h"
+unsigned long tts = 0; //zum Testen
 
 bool preprocessInput(const String &req) {
     //RequestResult result = false;
@@ -10,10 +11,12 @@ bool preprocessInput(const String &req) {
         lastCommandTime = millis();
         int posX = req.indexOf("x=");
         int posY = req.indexOf("y=");
+        int posT = req.indexOf("t="); //zum Testen
 
         if (posX != -1 && posY != -1) { //zur Sicherheit wird geprüft, ob beide Werte vorliegen, um falsche Ansteuerung zu vermeiden
             float fx = req.substring(posX + 2, req.indexOf("&", posX)).toFloat();
-            float fy = req.substring(posY + 2).toFloat();
+            float fy = req.substring(posY + 2, req.indexOf("&", posT)).toFloat();
+            unsigned long tts = req.substring(posT + 2).toInt(); //zumTesten
 
             // Joystick- in Motorwerte umrechnen
             int velocity = round(fy * 125); //255 maxPWM für Arduinoausgänge

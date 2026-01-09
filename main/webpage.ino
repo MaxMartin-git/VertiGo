@@ -68,17 +68,19 @@ void sendWebpage(WiFiClient &client) {
   client.println("let lastSendTime = 0;");
   client.println("const SEND_INTERVAL = 200");  // alle xy ms");
 
-  client.println("function send(x, y) {");
+  client.println("function send(x, y, t) {"); //+ t
   client.println("  const now = Date.now();");
   client.println("  if (((x != 0) || (y != 0)) && now - lastSendTime < SEND_INTERVAL) return;");
   client.println("  lastSendTime = now;");
-  client.println("  fetch(`/joy?x=${x}&y=${y}`);");
+  client.println("  fetch(`/joy?x=${x}&y=${y}&t=${t}`);"); //Anpassung zum Testen + &t=${t}
   client.println("}");
 
   //---------------------------------------
 
   client.println("function handle(e) {");
   client.println("  if (!active) return;");
+  client.println("  const touchTimeStamp = Math.round(performance.now());"); //Anpassung zum Testen
+
   client.println("  let x = e.clientX - boxRect.left - 150;");
   client.println("  let y = e.clientY - boxRect.top - 150;");
 
@@ -101,7 +103,7 @@ void sendWebpage(WiFiClient &client) {
   client.println("  const nx = (x / 60).toFixed(2);");
   client.println("  const ny = (-y / 60).toFixed(2);");
 
-  client.println("  send(nx, ny);");
+  client.println("  send(nx, ny, touchTimeStamp);"); //+ touchTimeStamp
   client.println("}");
 
   client.println("box.addEventListener('mousedown', e => { active = true; handle(e); });");

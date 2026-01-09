@@ -1,6 +1,7 @@
 #include "preprocessInput.h"
 
 void handleWiFi(WiFiServer &server) {
+    unsigned long tClient = millis();
     WiFiClient client = server.available();
     if (!client) return;
 
@@ -14,14 +15,32 @@ void handleWiFi(WiFiServer &server) {
         delay(1);
     }
 
+    unsigned long tAvailable = millis();
+
     String req = client.readStringUntil('\r');
     client.flush();
 
+    unsigned long tReadDone = millis();
+    //-------------Test---------------------------------
+    Serial.print("waitForClient: ");
+    Serial.println(startTime - tClient);
+
+    Serial.print("waitForData: ");
+    Serial.println(tAvailable - startTime);
+
+    Serial.print("readString: ");
+    Serial.println(tReadDone - tAvailable);
+    //---------------------------------------------------
     Serial.print("Request: ");
     Serial.println(req);
 
     // --- Logik auslagern ---
     bool sendShortResponse = preprocessInput(req);
+
+    //----------Differenz zu ausgelesenem touchtimestamp------------
+    Serial.print("tts to readStringDone: ");
+    Serial.println(tReadDone - tts);
+    //--------------------------------------------------------------
 
     // --- Antwort senden ---
     if (sendShortResponse) {
