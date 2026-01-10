@@ -11,7 +11,7 @@ void handleWiFi(WiFiServer &server) {
             Serial.println("Client Timeout");
             return;
         }
-        delay(1);
+        delay(0);
     }
 
     String req = client.readStringUntil('\r');
