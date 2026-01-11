@@ -1,9 +1,13 @@
 #ifndef PREPROCESSINPUT_H
 #define PREPROCESSINPUT_H
 
-#include <Arduino.h> // für String
+#include <Arduino.h>	// für String
+#include <WiFiS3.h>
 
-// Funktionsdeklaration
-bool preprocessInput(const String &req);//RequestResult preprocessInput(const String &req);
+// Funktionsdeklarationen
+
+void handleStateRequest(const String &req);
+
+void handleJoystickRequest(const String &req, WiFiClient &client);
 
 #endif

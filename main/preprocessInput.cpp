@@ -2,59 +2,61 @@
 #include "config.h"
 #include "commands.h"
 
-bool preprocessInput(const String &req) {
-    //RequestResult result = false;
 
-    // === Joystick-Steuerung mit gleichwertiger Skalierung von x und y ===
-    if (req.indexOf("GET /joy?") != -1) {
-        lastCommandTime = millis();
-        int posX = req.indexOf("x=");
-        int posY = req.indexOf("y=");
+void handleStateRequest(const String &req) {
 
-        if (posX != -1 && posY != -1) { //zur Sicherheit wird geprüft, ob beide Werte vorliegen, um falsche Ansteuerung zu vermeiden
-            float fx = req.substring(posX + 2, req.indexOf("&", posX)).toFloat();
-            float fy = req.substring(posY + 2).toFloat();
-
-            // Joystick- in Motorwerte umrechnen
-            int velocity = round(fy * 125); //255 maxPWM für Arduinoausgänge
-            int steering = round(fx * 125);
-
-            int maxLeft  = velocity + steering;
-            int maxRight = velocity - steering;
-
-            int maxPWM = max(abs(maxLeft), abs(maxRight));
-            if (maxPWM > 255) {
-                float scale = 255.0 / maxPWM;
-                velocity = round(velocity * scale);
-            }
-
-            int tmpLeft  = constrain(velocity + steering, -255, 255);
-            int tmpRight = constrain(velocity - steering, -255, 255);
-
-            leftDir  = (tmpLeft >= 0) ? 1 : -1;
-            rightDir = (tmpRight >= 0) ? 1 : -1;
-
-            leftPWM  = abs(tmpLeft);
-            rightPWM = abs(tmpRight);
-        }
-
-        //result.sendShortResponse = true;
-        return true;
-    }
-
-    // --- Motor EIN ---
+    // --- Motoren EIN ---
     if (req.indexOf("/?motor=on") != -1) {
         enableMotors = true;
         Serial.println("enableMotors: true");
-        return false; 
+        return;
     }
 
-    // --- Motor AUS ---
+    // --- Motoren AUS ---
     if (req.indexOf("/?motor=off") != -1) {
         enableMotors = false;
         Serial.println("enableMotors: false");
-        return false; 
+		return;
+    }
+}
+
+void handleJoystickRequest(const String &req, WiFiClient &client) {
+
+    lastCommandTime = millis();
+
+    //Joystick-Steuerung mit gleichwertiger Skalierung von x und y
+    int posX = req.indexOf("x=");
+    int posY = req.indexOf("y=");
+
+    if (posX == -1 || posY == -1) return; //zur Sicherheit wird geprüft, ob beide Werte vorliegen, um falsche Ansteuerung zu vermeiden
+
+    float fx = req.substring(posX + 2, req.indexOf("&", posX)).toFloat();
+    float fy = req.substring(posY + 2).toFloat();
+
+    // Joystick → Motorwerte
+    int velocity = round(fy * 125);
+    int steering = round(fx * 125);
+
+    int maxLeft  = velocity + steering;
+    int maxRight = velocity - steering;
+
+    int maxPWM = max(abs(maxLeft), abs(maxRight));
+    if (maxPWM > 255) {
+        float scale = 255.0 / maxPWM;
+        velocity = round(velocity * scale);
     }
 
-    return false; // Standard: Signal für WifiHandler zum Webseite senden, wenn der Request nicht speziell behandelt wird, Webseite laden/ Standardrequests etc.
+    int tmpLeft  = constrain(velocity + steering, -255, 255);
+    int tmpRight = constrain(velocity - steering, -255, 255);
+
+    leftDir  = (tmpLeft  >= 0) ? 1 : -1;
+    rightDir = (tmpRight >= 0) ? 1 : -1;
+
+    leftPWM  = abs(tmpLeft);
+    rightPWM = abs(tmpRight);
+	
+	// send short HTTP-response
+	client.println("HTTP/1.1 200 OK");
+	client.println("Connection: close");
+	client.println();
 }
