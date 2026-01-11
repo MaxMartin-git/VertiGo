@@ -3,6 +3,7 @@
 // wird im main loop aufgerufen
 
 void handleWiFi(WiFiServer &server) {
+    unsigned long tClient = millis();
     WiFiClient client = server.available();
     if (!client) return;
 
@@ -16,11 +17,13 @@ void handleWiFi(WiFiServer &server) {
         delay(0);
     }
 
+    unsigned long tAvailable = millis();
+
     String req = client.readStringUntil('\r');
     client.flush();
 
     // sinnvoll hier den request nach Fall (Joy/Zustandsbefehl) zu unterscheiden, entsprechenden handler aufrufen und dort den jeweiligen web-response-typ senden?
-
+    
     Serial.print("Request: ");
     Serial.println(req);
 
