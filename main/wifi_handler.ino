@@ -1,5 +1,7 @@
 #include "preprocessInput.h"
 
+// wird im main loop aufgerufen
+
 void handleWiFi(WiFiServer &server) {
     WiFiClient client = server.available();
     if (!client) return;
@@ -17,6 +19,8 @@ void handleWiFi(WiFiServer &server) {
     String req = client.readStringUntil('\r');
     client.flush();
 
+    // sinnvoll hier den request nach Fall (Joy/Zustandsbefehl) zu unterscheiden, entsprechenden handler aufrufen und dort den jeweiligen web-response-typ senden?
+
     Serial.print("Request: ");
     Serial.println(req);
 
@@ -29,8 +33,7 @@ void handleWiFi(WiFiServer &server) {
         client.println("Connection: close");
         client.println();
     } else {
-        // Standardfall: Webseite senden
-        sendWebpage(client);
+        sendWebpage(client); // Standardfall: Webseite senden
     }
 
     client.stop();
