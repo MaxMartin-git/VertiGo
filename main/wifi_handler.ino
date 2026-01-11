@@ -3,7 +3,6 @@
 // wird im main loop aufgerufen
 
 void handleWiFi(WiFiServer &server) {
-    unsigned long tClient = millis();
     WiFiClient client = server.available();
     if (!client) return;
 
@@ -17,27 +16,26 @@ void handleWiFi(WiFiServer &server) {
         delay(0);
     }
 
-    unsigned long tAvailable = millis();
-
     String req = client.readStringUntil('\r');
     client.flush();
 
-    // sinnvoll hier den request nach Fall (Joy/Zustandsbefehl) zu unterscheiden, entsprechenden handler aufrufen und dort den jeweiligen web-response-typ senden?
-    
     Serial.print("Request: ");
     Serial.println(req);
 
-    // --- Logik auslagern ---
-    bool sendShortResponse = preprocessInput(req);
-
-    // --- Antwort senden ---
-    if (sendShortResponse) {
-        client.println("HTTP/1.1 200 OK");
-        client.println("Connection: close");
-        client.println();
-    } else {
-        sendWebpage(client); // Standardfall: Webseite senden
+    // request nach Fall (Joy/Zustandsbefehl) unterscheiden, entsprechenden handler aufrufen und dort den jeweiligen web-response-typ senden
+    
+    // Joystick: Sonderfall → kurze Antwort
+    if (req.indexOf("GET /joy?") != -1) {
+		//if (not manual mode) return zum Vermeiden von Joystickauswertung?
+        handleJoystickRequest(req, client);   // dort wird kurze Antwort gesendet
+        client.stop();
+        return; //return, da es nur eine request pro loop gibt und diese damit abgearbeitet ist
     }
 
+    // Zustandsänderungen (einzelne events in größeren Zeitabständen)
+    handleStateRequest(req);           // nur Logik ohne HTTP-response
+
+    // Webseite senden
+    sendWebpage(client);    //erzeugt Webseiten-Refresh
     client.stop();
 }
