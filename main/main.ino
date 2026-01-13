@@ -19,7 +19,16 @@ void setup() {
 }
 
 void loop() { //ab hier wird ständig wiederholt
-  handleWiFi(server);   // verarbeitet Anfragen → setzt "command" & "velocity"
-  driveMotors(leftPWM, leftDir, rightPWM, rightDir);
+  MotorCmd activeCmd;
+  handleWiFi(server);   // handling der requests
+
+  // Fahrmodus abfragen
+  if (mode == MANUAL) {
+      activeCmd = manualCmd;
+  } else {
+      activeCmd = autoCmd;
+  }
+
+  driveMotors(activeCmd);
   //US_measure();
 }

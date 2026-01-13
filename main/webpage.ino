@@ -1,6 +1,13 @@
 #include <WiFiS3.h>
 #include "commands.h"
 
+#define BTN_SIZE_COMMON "width:140px; height:45px; font-size:16px; text-align:center; vertical-align:middle;"
+
+#define BTN_INACTIVE "#e0e0e0" //Farbtöne
+#define BTN_ACTIVE   "#b0b0b0"
+const char* activeWeight   = "font-weight:bold;";
+const char* inactiveWeight = "font-weight:normal;";
+
 void sendWebpage(WiFiClient &client) {
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
@@ -17,15 +24,40 @@ void sendWebpage(WiFiClient &client) {
   //Überschrift gesamt
   client.println("<h1>VertiGo - Bedienpanel</h1>");
   //Überschrift Freigabe
-  client.print("<p>Antriebsfreigabe <b>");
+  client.print("<p>Antriebsfreigabe <b>"); 
+
   // Zustand anzeigen
   client.print("<p>Status: <b>");
   client.print(enableMotors ? "FREIGEGEBEN" : "GESPERRT");
   client.println("</b></p>");
 
   // Buttons EIN/AUS
-  client.println("<a href='/?motor=on'><button style='background:lightgreen;'>FREIGEBEN</button></a>");
-  client.println("<a href='/?motor=off'><button style='background:salmon;'>SPERREN</button></a>");
+  client.println("<a href='/?motor=on'><button style='background:lightgreen; " BTN_SIZE_COMMON "'>FREIGEBEN</button></a>");
+  client.println("<a href='/?motor=off'><button style='background:salmon; " BTN_SIZE_COMMON "'>SPERREN</button></a>");
+
+  // Buttons Steuermodus Manuell / Auto
+  const char* manualColor = (mode == MANUAL) ? BTN_ACTIVE : BTN_INACTIVE;
+  const char* autoColor   = (mode == WALL_ALIGN) ? BTN_ACTIVE : BTN_INACTIVE;
+  const char* manualWeight = (mode == MANUAL) ? activeWeight : inactiveWeight;
+  const char* autoWeight   = (mode == WALL_ALIGN) ? activeWeight : inactiveWeight;
+
+  //Überschrift Freigabe
+  client.print("<p><b>Fahrmodus</b></p>"); 
+
+  // Buttons Steuermodus
+  client.println(
+    "<a href='/?steeringmode=manual'>"
+    "<button style='background:" + String(manualColor) + "; "
+    + BTN_SIZE_COMMON + manualWeight + "'>Manuell</button>"
+    "</a>"
+  );
+
+  client.println(
+    "<a href='/?steeringmode=auto'>"
+    "<button style='background:" + String(autoColor) + "; "
+    + BTN_SIZE_COMMON + autoWeight + "'>Auto</button>"
+    "</a>"
+  );
 
   // Joystick
   client.println("<h2>Joystick</h2>");
@@ -84,7 +116,6 @@ void sendWebpage(WiFiClient &client) {
   client.println("  lastY = y;");
   client.println("  fetch(`/joy?x=${x}&y=${y}`);");
   client.println("}");
-
   //---------------------------------------
 
   client.println("function CalcJoyGeom() {");

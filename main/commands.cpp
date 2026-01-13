@@ -1,5 +1,12 @@
 #include "commands.h"
 
+// Aktueller Modus
+ControlMode mode = MANUAL;
+
+// Structinstanzen für Motorbefehle
+MotorCmd manualCmd;
+MotorCmd autoCmd;
+
 // PWM-Werte für die Motoren
 int leftPWM = 0;
 int rightPWM = 0;

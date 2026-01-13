@@ -26,7 +26,7 @@ void handleWiFi(WiFiServer &server) {
     
     // Joystick: Sonderfall → kurze Antwort
     if (req.indexOf("GET /joy?") != -1) {
-		//if (not manual mode) return zum Vermeiden von Joystickauswertung?
+		//if (not manual mode) return zum Vermeiden von Joystickauswertung möglich...aktuell nicht implementiert
         handleJoystickRequest(req, client);   // dort wird kurze Antwort gesendet
         client.stop();
         return; //return, da es nur eine request pro loop gibt und diese damit abgearbeitet ist

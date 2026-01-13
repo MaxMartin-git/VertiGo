@@ -20,36 +20,34 @@ void setMotorpins() {
 }
 
 // Motorsteuerung mit separaten PWM/Richtung
-void driveMotors(int leftPWM, int leftDir, int rightPWM, int rightDir) {
+void driveMotors(const MotorCmd &cmd) {
 
     // --- Master-Schalter: Motor generell AUS ---
     if (!enableMotors) {
         digitalWrite(leftForward, LOW);
         digitalWrite(leftBackward, LOW);
-        analogWrite(leftVelocity, 0);
         digitalWrite(rightForward, LOW);
         digitalWrite(rightBackward, LOW);
-        analogWrite(rightVelocity, 0);
         return;
     }
 
     // --- Linker Motor ---
-    if (leftDir >= 0) {
+    if (cmd.leftDir >= 0) {
         digitalWrite(leftForward, HIGH);
         digitalWrite(leftBackward, LOW);
     } else {
         digitalWrite(leftForward, LOW);
         digitalWrite(leftBackward, HIGH);
     }
-    analogWrite(leftVelocity, leftPWM);
+    analogWrite(leftVelocity, cmd.leftPWM);
 
     // --- Rechter Motor ---
-    if (rightDir >= 0) {
+    if (cmd.rightDir >= 0) {
         digitalWrite(rightForward, HIGH);
         digitalWrite(rightBackward, LOW);
     } else {
         digitalWrite(rightForward, LOW);
         digitalWrite(rightBackward, HIGH);
     }
-    analogWrite(rightVelocity, rightPWM);
+    analogWrite(rightVelocity, cmd.rightPWM);
 }

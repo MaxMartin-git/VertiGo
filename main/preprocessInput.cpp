@@ -5,17 +5,29 @@
 
 void handleStateRequest(const String &req) {
 
-    // --- Motoren EIN ---
+    //Antriebsfreigabe auslesen
     if (req.indexOf("/?motor=on") != -1) {
         enableMotors = true;
         Serial.println("enableMotors: true");
         return;
     }
 
-    // --- Motoren AUS ---
     if (req.indexOf("/?motor=off") != -1) {
         enableMotors = false;
         Serial.println("enableMotors: false");
+		return;
+    }
+
+    //Fahrmodus auslesen
+    if (req.indexOf("/?steeringmode=manual") != -1) {
+        mode = MANUAL;
+        Serial.println("mode: MANUAL;");
+		return;
+    }
+
+    if (req.indexOf("/?steeringmode=auto") != -1) {
+        mode = WALL_ALIGN;
+        Serial.println("mode: WALL_ALIGN;");
 		return;
     }
 }
@@ -49,11 +61,11 @@ void handleJoystickRequest(const String &req, WiFiClient &client) {
     int tmpLeft  = constrain(velocity + steering, -255, 255);
     int tmpRight = constrain(velocity - steering, -255, 255);
 
-    leftDir  = (tmpLeft  >= 0) ? 1 : -1;
-    rightDir = (tmpRight >= 0) ? 1 : -1;
+    manualCmd.leftDir  = (tmpLeft  >= 0) ? 1 : -1;
+    manualCmd.rightDir = (tmpRight >= 0) ? 1 : -1;
 
-    leftPWM  = abs(tmpLeft);
-    rightPWM = abs(tmpRight);
+    manualCmd.leftPWM  = abs(tmpLeft);
+    manualCmd.rightPWM = abs(tmpRight);
 	
 	// send short HTTP-response
 	client.println("HTTP/1.1 200 OK");
