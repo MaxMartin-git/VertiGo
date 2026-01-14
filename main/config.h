@@ -12,6 +12,11 @@
 #define DEFAULT_VELOCITY  120   // Geschwindigkeit nach Start
 #define MAX_VELOCITY      255   // Max PWM
 #define JOYSTICK_REQUEST_TIME 200
-#define DESIRED_US_DURATION  300  //Mikrosekunden -> zur Abstandseinhaltung zur Wand 
+#define DESIRED_US_DURATION  300  //Mikrosekunden -> zur Abstandseinhaltung zur Wand
+
+#define BASE_SPEED 100
+#define TARGET_MM  150
+#define K_AtoB     0.5
+#define K_DIST     0.5
 
 #endif

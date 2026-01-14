@@ -58,14 +58,11 @@ void handleJoystickRequest(const String &req, WiFiClient &client) {
         velocity = round(velocity * scale);
     }
 
-    int tmpLeft  = constrain(velocity + steering, -255, 255);
-    int tmpRight = constrain(velocity - steering, -255, 255);
+    manualCmd.leftDir  = (maxLeft  >= 0) ? 1 : -1;
+    manualCmd.rightDir = (maxRight >= 0) ? 1 : -1;
 
-    manualCmd.leftDir  = (tmpLeft  >= 0) ? 1 : -1;
-    manualCmd.rightDir = (tmpRight >= 0) ? 1 : -1;
-
-    manualCmd.leftPWM  = abs(tmpLeft);
-    manualCmd.rightPWM = abs(tmpRight);
+    manualCmd.leftPWM  = constrain(abs(maxLeft), 0, 255);
+    manualCmd.rightPWM = constrain(abs(maxRight), 0, 255);
 	
 	// send short HTTP-response
 	client.println("HTTP/1.1 200 OK");

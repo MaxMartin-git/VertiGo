@@ -1,6 +1,8 @@
 #include "config.h"
 #include <WiFiS3.h>
 #include "commands.h"    // Enthält die Command-Definitionen
+#include "ultrasonic.h"
+#include "wallfollow.h"
 
 WiFiServer server(WIFI_PORT); //Erzeugt einen Webserver auf Port 80 (HTTP)
 
@@ -19,16 +21,16 @@ void setup() {
 }
 
 void loop() { //ab hier wird ständig wiederholt
-  MotorCmd activeCmd;
+  MotorCmd activeCmd{};
   handleWiFi(server);   // handling der requests
 
   // Fahrmodus abfragen
   if (mode == MANUAL) {
       activeCmd = manualCmd;
   } else {
-      activeCmd = autoCmd;
+      US_data us = US_measure();
+      activeCmd = wallFollowControl(us);
   }
 
   driveMotors(activeCmd);
-  //US_measure();
 }
