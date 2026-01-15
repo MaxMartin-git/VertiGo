@@ -22,6 +22,7 @@ void setup() {
 
 void loop() { //ab hier wird ständig wiederholt
   MotorCmd activeCmd{};
+  batterieStatus();
   handleWiFi(server);   // handling der requests
 
   // Fahrmodus abfragen
@@ -33,4 +34,5 @@ void loop() { //ab hier wird ständig wiederholt
   }
 
   driveMotors(activeCmd);
+  //Serial.println(batteryVoltage);
 }

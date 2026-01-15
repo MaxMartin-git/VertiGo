@@ -22,6 +22,10 @@ void setMotorpins() {
 // Motorsteuerung mit separaten PWM/Richtung
 void driveMotors(const MotorCmd &cmd) {
 
+    /*if (batteryVoltage <= 7.1) { //durch Spannungsfall bei Last - so unbrauchbar
+        enableMotors = false;
+    }*/
+
     // --- Master-Schalter: Motor generell AUS ---
     if (!enableMotors) {
         digitalWrite(leftForward, LOW);
@@ -30,7 +34,6 @@ void driveMotors(const MotorCmd &cmd) {
         digitalWrite(rightBackward, LOW);
         return;
     }
-
     // --- Linker Motor ---
     if (cmd.leftDir >= 0) {
         digitalWrite(leftForward, HIGH);

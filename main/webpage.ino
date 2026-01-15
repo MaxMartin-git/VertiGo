@@ -23,6 +23,12 @@ void sendWebpage(WiFiClient &client) {
 
   //Überschrift gesamt
   client.println("<h1>VertiGo - Bedienpanel</h1>");
+
+  //Batteriestatus-Anzeige
+  client.print("<p>Batterie: <b>");
+  client.print(batterySoC);
+  client.print(" %</b></p>");
+
   //Überschrift Freigabe
   client.print("<p>Antriebsfreigabe <b>"); 
 

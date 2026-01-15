@@ -1,5 +1,4 @@
 #include "preprocessInput.h"
-
 // wird im main loop aufgerufen
 
 void handleWiFi(WiFiServer &server) {
