@@ -2,13 +2,6 @@
 #include "config.h"
 #include "ultrasonic.h"
 
-/*struct US_data {
-  int dist_A;
-  int dist_B;
-};
-
-US_data US_measure(); //ohne Header/cpp muss es hier schonmal vorkommen */
-
 // Pin-Zuweisungen
 #define trigPin_AR 8
 #define echoPin_AR 8

@@ -1,8 +1,11 @@
 #include "config.h"
 #include <WiFiS3.h>
-#include "commands.h"    // Enthält die Command-Definitionen
+#include "commands.h"
 #include "ultrasonic.h"
 #include "wallfollow.h"
+
+unsigned long lastIMU = 0;
+#define BUZZER  9
 
 WiFiServer server(WIFI_PORT); //Erzeugt einen Webserver auf Port 80 (HTTP)
 
@@ -17,11 +20,21 @@ void setup() {
 
   server.begin();
 
+  IMU_setup();
   setMotorpins();
 }
 
 void loop() { //ab hier wird ständig wiederholt
+  static float tilt = 0;
   MotorCmd activeCmd{};
+
+  if (millis() - lastIMU >= 10) {   // 100 Hz
+      lastIMU = millis();
+
+      tilt = readIMU();
+      //Serial.println(tilt);
+  }
+
   batterieStatus();
   handleWiFi(server);   // handling der requests
 
@@ -32,7 +45,8 @@ void loop() { //ab hier wird ständig wiederholt
       US_data us = US_measure();
       activeCmd = wallFollowControl(us);
   }
-
+  Serial.println(tilt);
+  handleSafetyValues(tilt);
   driveMotors(activeCmd);
-  //Serial.println(batteryVoltage);
+  
 }
