@@ -19,6 +19,7 @@ void IMU_setup() {
 }
 
 float readIMU() {
+    static float filteredTilt = 0;
     mpu.getAcceleration(&ax_raw, &ay_raw, &az_raw);
     
     float ax = ax_raw / 16384.0;
@@ -31,10 +32,13 @@ float readIMU() {
     cosTilt = constrain(cosTilt, -1.0, 1.0);
 
     float tilt = acos(cosTilt) * 180.0 / PI;
+
+    //Glättung
+    filteredTilt = 0.9 * filteredTilt + 0.1 * tilt;
     /*
-    Serial.print("Tilt: ");
-    Serial.print(tilt);
+    Serial.print("filteredTilt: ");
+    Serial.print(filteredTilt);
     Serial.println(" Grad");
     */
-    return tilt;
+    return filteredTilt;
 }

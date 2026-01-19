@@ -35,6 +35,7 @@ void loop() { //ab hier wird ständig wiederholt
       //Serial.println(tilt);
   }
 
+  handleSafetyValues(tilt);
   batterieStatus();
   handleWiFi(server);   // handling der requests
 
@@ -45,8 +46,8 @@ void loop() { //ab hier wird ständig wiederholt
       US_data us = US_measure();
       activeCmd = wallFollowControl(us);
   }
-  Serial.println(tilt);
-  handleSafetyValues(tilt);
+  
+  
   driveMotors(activeCmd);
   
 }
