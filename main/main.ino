@@ -35,9 +35,9 @@ void loop() { //ab hier wird ständig wiederholt
       //Serial.println(tilt);
   }
 
-  handleSafetyValues(tilt);
   batterieStatus();
   handleWiFi(server);   // handling der requests
+  handleSafetyValues(tilt);
 
   // Fahrmodus abfragen
   if (mode == MANUAL) {
@@ -47,7 +47,5 @@ void loop() { //ab hier wird ständig wiederholt
       activeCmd = wallFollowControl(us);
   }
   
-  
   driveMotors(activeCmd);
-  
 }

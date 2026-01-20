@@ -6,7 +6,7 @@
 
 // Funktionsdeklarationen
 
-void handleStateRequest(const String &req);
+bool handleStateRequest(const String &req, WiFiClient &client);
 
 void handleJoystickRequest(const String &req, WiFiClient &client);
 

@@ -8,7 +8,6 @@ void handleSafetyValues(float tilt) {
     if (tilt > 30.0) {
         enableMotors = false;
         tone(BUZZER, 1000);
-        uiNeedsRefresh = true; //schnelle Lösung zur Webseitenaktualisierung durch Abfrage in sendwebpage()
         return;                   
     }
     

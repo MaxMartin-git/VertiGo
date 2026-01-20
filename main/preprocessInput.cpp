@@ -3,33 +3,35 @@
 #include "commands.h"
 
 
-void handleStateRequest(const String &req) {
+bool handleStateRequest(const String &req, WiFiClient &client) {
 
     //Antriebsfreigabe auslesen
     if (req.indexOf("/?motor=on") != -1) {
         enableMotors = true;
         Serial.println("enableMotors: true");
-        return;
+        return true;
     }
 
     if (req.indexOf("/?motor=off") != -1) {
         enableMotors = false;
         Serial.println("enableMotors: false");
-		return;
+		return true;
     }
 
     //Fahrmodus auslesen
     if (req.indexOf("/?steeringmode=manual") != -1) {
         mode = MANUAL;
         Serial.println("mode: MANUAL;");
-		return;
+		return false;
     }
 
     if (req.indexOf("/?steeringmode=auto") != -1) {
         mode = WALL_ALIGN;
         Serial.println("mode: WALL_ALIGN;");
-		return;
+		return false;
     }
+    Serial.println("Zweiter Req-Durchlauf");
+    return false;
 }
 
 void handleJoystickRequest(const String &req, WiFiClient &client) {
@@ -65,7 +67,7 @@ void handleJoystickRequest(const String &req, WiFiClient &client) {
     manualCmd.rightPWM = constrain(abs(maxRight), 0, 255);
 	
 	// send short HTTP-response
-	client.println("HTTP/1.1 200 OK");
+	/*client.println("HTTP/1.1 200 OK");
 	client.println("Connection: close");
-	client.println();
+	client.println();*/
 }

@@ -17,9 +17,9 @@ void sendWebpage(WiFiClient &client) {
   client.println("<!DOCTYPE html>");
   client.println("<html><head><meta name='viewport' content='width=device-width, initial-scale=1'>");
 
-  if (uiNeedsRefresh) {
-    client.println("<meta http-equiv='refresh' content='0'>");
-    uiNeedsRefresh = false;
+  if (mode != MANUAL) { //regelmäßiger autorefresh nur wenn nicht Joystick genutzt wird, da er sonst behindert wird
+    Serial.println("autoRefresh aktiv");
+    client.println("<meta http-equiv='refresh' content='2'>");
   }
 
   client.println("<style>");
