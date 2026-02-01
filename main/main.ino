@@ -6,6 +6,7 @@
 
 unsigned long lastIMU = 0;
 #define BUZZER  9
+int Bewegungsmelder = 10;
 
 WiFiServer server(WIFI_PORT); //Erzeugt einen Webserver auf Port 80 (HTTP)
 
@@ -19,7 +20,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   server.begin();
-
+  pinMode(Bewegungsmelder, INPUT);
   IMU_setup();
   setMotorpins();
 }
